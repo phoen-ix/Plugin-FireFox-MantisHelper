@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Mantis Helper",
-  "version": "1.1.0.0",
+  "version": "1.2.0.0",
   "author": "Michael Fiedler",
   "permissions": [
     "contextMenus",
@@ -23,15 +23,6 @@
     "96": "icons/icon96.png",
     "128": "icons/icon128.png"
   },
-  "browser_action": {
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "32": "icons/icon32.png",
-      "48": "icons/icon48.png",
-      "64": "icons/icon64.png",
-      "96": "icons/icon96.png",
-      "128": "icons/icon128.png"
-    },
   "browser_specific_settings": {
     "gecko": {
       "id": "mantis-helper@monumental.at",
