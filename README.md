@@ -10,7 +10,7 @@ Custom Mantis URL: Configure your specific Mantis instance URL through the optio
 The extension requires the following permissions:<br>
 Context Menus: To add the "Open in Mantis" option to the browser's right-click menu.<br>
 Storage: To save the custom Mantis URL that you set in the options.<br>
-`http://*/*` and `https://*/*`: To access website data.<br>
+
 <br>
 <b>How to Use:</b><br>
 Installation: Download and install the extension.<br>
