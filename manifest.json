@@ -4,9 +4,7 @@
   "version": "1.0.0.2",
   "permissions": [
     "contextMenus",
-    "storage",
-    "http://*/*",
-    "https://*/*"
+    "storage"
   ],
   "background": {
     "scripts": ["background.js"]
