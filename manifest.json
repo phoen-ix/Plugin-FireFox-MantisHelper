@@ -1,14 +1,14 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Mantis Helper",
-  "version": "1.2.0.0",
+  "version": "2.0.1",
   "author": "Michael Fiedler",
   "permissions": [
     "contextMenus",
     "storage"
   ],
   "background": {
-    "scripts": ["data/background.js"]
+    "scripts": ["data/mantis.js", "data/background.js"]
   },
   "description": "Select a number on a website and open it in Mantis from the context menu",
   "options_ui": {
@@ -26,7 +26,10 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "mantis-helper@monumental.at",
-      "strict_min_version": "57.0"
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }
