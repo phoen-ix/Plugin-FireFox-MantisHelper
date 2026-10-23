@@ -42,7 +42,7 @@ CI (`.github/workflows/ci.yml`) runs `npm run lint` and the screenshot tour as a
 The images in [`docs/screenshots/`](docs/screenshots/README.md) are taken by the docs tour in [`e2e/docs/`](e2e/docs/tour.spec.ts), in headless Firefox. Playwright cannot load an extension into Firefox, so the tour opens the pages in `data/` as files and stubs the `browser` API they use; the hint page is opened through `background.js`'s real menu handler. It needs no server and no Docker:
 
 ```bash
-cd e2e && npm ci && npx playwright install firefox && cd ..
+cd e2e && npm ci && npx playwright install --with-deps firefox && cd ..   # --with-deps: also the system libraries (sudo)
 scripts/docs-screenshots.sh            # writes docs/screenshots/*.png; pass a directory to write elsewhere
 ```
 

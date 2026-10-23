@@ -71,8 +71,9 @@ async function optionsPage(page: Page, customUrl?: string): Promise<void> {
 }
 
 /** `contentOnly`: only the content, from the top-left corner, instead of
- * the whole viewport - for a page that is mostly empty. */
-async function shoot(page: Page, name: string, opts: { contentOnly?: boolean } = {}): Promise<void> {
+ * the whole viewport - for a page that is mostly empty. `around`: only this
+ * element plus a margin - for a page that centres a small card. */
+async function shoot(page: Page, name: string, opts: { contentOnly?: boolean; around?: string } = {}): Promise<void> {
   await page.evaluate(() => document.fonts.ready)
   await page.evaluate(() => window.scrollTo(0, 0))
   await page.mouse.move(0, 0)
@@ -92,6 +93,11 @@ async function shoot(page: Page, name: string, opts: { contentOnly?: boolean } =
     })
     clip = { x: 0, y: 0, width: Math.ceil(right) + 24, height: Math.min(2400, Math.ceil(bottom) + 24) }
   }
+  if (opts.around) {
+    const box = (await page.locator(opts.around).boundingBox())!
+    const m = 32
+    clip = { x: box.x - m, y: box.y - m, width: box.width + 2 * m, height: box.height + 2 * m }
+  }
   await page.screenshot({ path: path.join(OUT, `${name}.png`), animations: 'disabled', caret: 'hide', clip })
 }
 
@@ -99,7 +105,7 @@ test('options: not configured yet', async ({ page }) => {
   await optionsPage(page)
   await expect(page.getByLabel('Mantis URL:')).toHaveValue('')
   await expect(page.locator('#preview')).toHaveText(/^Enter the address of your Mantis installation/)
-  await shoot(page, 'options-empty')
+  await shoot(page, 'options-empty', { around: '#optionsForm' })
 })
 
 test('options: unusable URL', async ({ page }) => {
@@ -110,7 +116,7 @@ test('options: unusable URL', async ({ page }) => {
   // What Save checks; a click would also raise the browser's validation
   // bubble, which fades in and out of the shot.
   expect(await input.evaluate((el: HTMLInputElement) => el.form!.checkValidity())).toBe(false)
-  await shoot(page, 'options-invalid')
+  await shoot(page, 'options-invalid', { around: '#optionsForm' })
 })
 
 test('options: saved', async ({ page }) => {
@@ -123,7 +129,7 @@ test('options: saved', async ({ page }) => {
   expect(await page.evaluate(() => browser.storage.sync.get('customUrl'))).toEqual({
     customUrl: `${MANTIS_URL}view.php?id=`,
   })
-  await shoot(page, 'options-saved')
+  await shoot(page, 'options-saved', { around: '#optionsForm' })
 })
 
 test('context menu: no single issue number in the selection', async ({ page }) => {
