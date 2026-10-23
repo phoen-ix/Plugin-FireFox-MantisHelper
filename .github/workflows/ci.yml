@@ -23,3 +23,22 @@ jobs:
       # The validator addons.mozilla.org runs on upload.
       - run: npm run lint
 
+  docs-tour:
+    name: Docs screenshots (render check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+
+      - name: Install Playwright
+        working-directory: e2e
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps firefox
+
+      # The screenshots go to a temp dir; docs-screenshots.yml makes the ones to commit.
+      - name: Run the docs tour
+        run: ARTIFACTS="$RUNNER_TEMP/docs-run" scripts/docs-screenshots.sh "$RUNNER_TEMP/screenshots"

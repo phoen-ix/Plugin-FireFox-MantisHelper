@@ -1,6 +1,8 @@
 # Mantis Helper — Firefox Extension
 
-Released: v2.0.1 on [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/).
+<img src="docs/screenshots/options-saved.png" alt="Mantis Helper options page with a saved Mantis URL and the address issue 1234 will open" width="800">
+
+Released: v2.0.1 on [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/). More screenshots: [the gallery](docs/screenshots/README.md).
 
 ## Overview
 Mantis Helper is a Firefox extension that adds a context menu option for quickly opening issue numbers in [Mantis](https://www.mantisbt.org/), a popular bug tracking system. It streamlines your workflow by letting you navigate directly to Mantis issues from any webpage where an issue number is displayed.
@@ -20,7 +22,11 @@ The extension requires the following permissions:
 ## How to Use
 1. **Install** the extension from [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/). It requires Firefox 140 or later.
 2. **Configure** your Mantis URL: open the extension's options (Add-ons and themes, `about:addons` > Mantis Helper > Options) and enter the address of your Mantis installation. If you use "Open in Mantis" before configuring it, the options open automatically.
-3. **Use it:** Highlight an issue number (e.g. `1234` or `#1234`) on a webpage, right-click, and select "Open in Mantis".
+
+   <img src="docs/screenshots/options-empty.png" alt="Options page with an empty Mantis URL field and the hint to enter the address of the Mantis installation" width="800">
+3. **Use it:** Highlight an issue number (e.g. `1234` or `#1234`) on a webpage, right-click, and select "Open in Mantis". If the selection holds no single issue number, a hint page opens instead:
+
+   <img src="docs/screenshots/menu-invalid-selection.png" alt="Hint page Invalid selection: no single issue number found in the selection" width="800">
 
 To use it in private windows, allow "Run in Private Windows" for Mantis Helper in `about:addons`.
 
@@ -30,7 +36,17 @@ To use it in private windows, allow "Run in Private Windows" for Mantis Helper i
 - Try it out: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…" and select `manifest.json` (or run `npx web-ext run`).
 - Package it for upload: `npx web-ext build` (the package is written to `web-ext-artifacts/`). The `webExt.ignoreFiles` list in `package.json` keeps the development files (`docs/`, `e2e/`, `scripts/`, `package*.json`) out of it.
 
-CI (`.github/workflows/ci.yml`) runs `npm run lint`.
+CI (`.github/workflows/ci.yml`) runs `npm run lint` and the screenshot tour as a render check.
+
+## Screenshots
+The images in [`docs/screenshots/`](docs/screenshots/README.md) are taken by the docs tour in [`e2e/docs/`](e2e/docs/tour.spec.ts), in headless Firefox. Playwright cannot load an extension into Firefox, so the tour opens the pages in `data/` as files and stubs the `browser` API they use; the hint page is opened through `background.js`'s real menu handler. It needs no server and no Docker:
+
+```bash
+cd e2e && npm ci && npx playwright install firefox && cd ..
+scripts/docs-screenshots.sh            # writes docs/screenshots/*.png; pass a directory to write elsewhere
+```
+
+The **Docs screenshots** workflow (manual) runs the same script and uploads the PNGs as the `docs-screenshots` artifact; it never commits.
 
 ## Changelog
 

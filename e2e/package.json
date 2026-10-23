@@ -1,0 +1,11 @@
+{
+  "name": "mantis-helper-firefox-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test -c playwright.docs.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}
