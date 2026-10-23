@@ -1,9 +1,9 @@
 # Mantis Helper — Firefox Extension
 
+Released: v2.0.1 on [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/).
+
 ## Overview
 Mantis Helper is a Firefox extension that adds a context menu option for quickly opening issue numbers in [Mantis](https://www.mantisbt.org/), a popular bug tracking system. It streamlines your workflow by letting you navigate directly to Mantis issues from any webpage where an issue number is displayed.
-
-Get it from [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/).
 
 ## Features
 - **Context Menu Integration:** Select an issue number on any webpage, right-click, and choose **Open “…” in Mantis**. The menu shows the selected text, and the issue opens in a new tab next to the current one, in the same container and tab group.
@@ -19,15 +19,18 @@ The extension requires the following permissions:
 
 ## How to Use
 1. **Install** the extension from [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/). It requires Firefox 140 or later.
-2. **Configure** your Mantis URL: go to the extension options (Settings > Extensions > Mantis Helper > Options) and enter the address of your Mantis installation. If you use "Open in Mantis" before configuring it, the options open automatically.
+2. **Configure** your Mantis URL: open the extension's options (Add-ons and themes, `about:addons` > Mantis Helper > Options) and enter the address of your Mantis installation. If you use "Open in Mantis" before configuring it, the options open automatically.
 3. **Use it:** Highlight an issue number (e.g. `1234` or `#1234`) on a webpage, right-click, and select "Open in Mantis".
 
 To use it in private windows, allow "Run in Private Windows" for Mantis Helper in `about:addons`.
 
 ## Development
+[web-ext](https://github.com/mozilla/web-ext) is a dev dependency: run `npm ci` once (Node 26, as in CI), then:
 - Lint with the same validator addons.mozilla.org uses: `npx web-ext lint`
 - Try it out: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…" and select `manifest.json` (or run `npx web-ext run`).
-- Package it for upload: `npx web-ext build` (the package is written to `web-ext-artifacts/`).
+- Package it for upload: `npx web-ext build` (the package is written to `web-ext-artifacts/`). The `webExt.ignoreFiles` list in `package.json` keeps the development files (`docs/`, `e2e/`, `scripts/`, `package*.json`) out of it.
+
+CI (`.github/workflows/ci.yml`) runs `npm run lint`.
 
 ## Changelog
 
