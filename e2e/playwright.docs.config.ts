@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+
 import { defineConfig, devices } from '@playwright/test'
 
 /* The docs tour (./docs): screenshots of the extension's own pages, and a
@@ -24,10 +26,15 @@ export default defineConfig({
     deviceScaleFactor: 2,
     locale: 'en-GB',
     launchOptions: {
-      env: { ...process.env, LANG: 'en_GB.UTF-8', LANGUAGE: 'en_GB:en', LC_ALL: 'en_GB.UTF-8' },
-      // The hint page has no styles, so it shows Firefox's default font (serif):
-      // the Times New Roman clone, not whatever the host's fontconfig maps serif to.
-      firefoxUserPrefs: { 'font.name.serif.x-western': 'Liberation Serif' },
+      env: {
+        ...process.env,
+        LANG: 'en_GB.UTF-8',
+        LANGUAGE: 'en_GB:en',
+        LC_ALL: 'en_GB.UTF-8',
+        // Form controls (the system font) and the unstyled hint page (serif)
+        // in Liberation, not whatever the host's fontconfig maps them to.
+        FONTCONFIG_FILE: fileURLToPath(new URL('./docs/fonts.conf', import.meta.url)),
+      },
     },
     timezoneId: 'Europe/Vienna',
     contextOptions: { reducedMotion: 'reduce' },
