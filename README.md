@@ -20,7 +20,7 @@ The extension requires the following permissions:
 **Data collection:** none. Mantis Helper sends nothing to its developer or anyone else. When you choose "Open in Mantis", the selected number is opened as a link on the Mantis server you configured.
 
 ## How to Use
-1. **Install** the extension from [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/). It requires Firefox 140 or later.
+1. **Install** the extension from [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/). It requires Firefox 142 or later.
 2. **Configure** your Mantis URL: open the extension's options (Add-ons and themes, `about:addons` > Mantis Helper > Options) and enter the address of your Mantis installation. If you use "Open in Mantis" before configuring it, the options open automatically.
 
    <img src="docs/screenshots/options-empty.png" alt="Options page with an empty Mantis URL field and the hint to enter the address of the Mantis installation" width="800">
@@ -32,7 +32,7 @@ To use it in private windows, allow "Run in Private Windows" for Mantis Helper i
 
 ## Development
 [web-ext](https://github.com/mozilla/web-ext) is a dev dependency: run `npm ci` once (Node 26, as in CI), then:
-- Lint with the same validator addons.mozilla.org uses: `npx web-ext lint`
+- Lint with the same validator addons.mozilla.org uses: `npm run lint` (`web-ext lint`; warnings fail it, as in CI)
 - Try it out: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…" and select `manifest.json` (or run `npx web-ext run`).
 - Package it for upload: `npx web-ext build` (the package is written to `web-ext-artifacts/`). The `webExt.ignoreFiles` list in `package.json` keeps the development files (`docs/`, `e2e/`, `scripts/`, `package*.json`) out of it.
 
@@ -49,6 +49,10 @@ scripts/docs-screenshots.sh            # writes docs/screenshots/*.png; pass a d
 The **Docs screenshots** workflow (manual) runs the same script and uploads the PNGs as the `docs-screenshots` artifact; it never commits.
 
 ## Changelog
+
+### Unreleased
+Changed:
+- Requires Firefox 142 or later, the first version with the built-in data consent on every platform (Firefox ESR 140 reached its end of life in September 2026).
 
 ### v2.0.1
 Fixed:

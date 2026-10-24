@@ -3,7 +3,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "lint": "web-ext lint",
+    "lint": "web-ext lint --warnings-as-errors",
     "build": "web-ext build --overwrite-dest"
   },
   "devDependencies": {
