@@ -25,6 +25,9 @@ export default defineConfig({
     locale: 'en-GB',
     launchOptions: {
       env: { ...process.env, LANG: 'en_GB.UTF-8', LANGUAGE: 'en_GB:en', LC_ALL: 'en_GB.UTF-8' },
+      // The hint page has no styles, so it shows Firefox's default font (serif):
+      // the Times New Roman clone, not whatever the host's fontconfig maps serif to.
+      firefoxUserPrefs: { 'font.name.serif.x-western': 'Liberation Serif' },
     },
     timezoneId: 'Europe/Vienna',
     contextOptions: { reducedMotion: 'reduce' },
