@@ -33,10 +33,11 @@ To use it in private windows, allow "Run in Private Windows" for Mantis Helper i
 ## Development
 [web-ext](https://github.com/mozilla/web-ext) is a dev dependency: run `npm ci` once (Node 26, as in CI), then:
 - Lint with the same validator addons.mozilla.org uses: `npm run lint` (`web-ext lint`; warnings fail it, as in CI)
+- Unit tests for the selection and URL parsing in `data/mantis.js`: `npm test`
 - Try it out: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on…" and select `manifest.json` (or run `npx web-ext run`).
-- Package it for upload: `npx web-ext build` (the package is written to `web-ext-artifacts/`). The `webExt.ignoreFiles` list in `package.json` keeps the development files (`docs/`, `e2e/`, `scripts/`, `package*.json`) out of it.
+- Package it for upload: `npx web-ext build` (the package is written to `web-ext-artifacts/`). The `webExt.ignoreFiles` list in `package.json` keeps the development files (`docs/`, `e2e/`, `scripts/`, `tests/`, `package*.json`) out of it.
 
-CI (`.github/workflows/ci.yml`) runs `npm run lint` and the screenshot tour as a render check.
+CI (`.github/workflows/ci.yml`) runs `npm run lint`, `npm test` and the screenshot tour as a render check.
 
 ## Screenshots
 The images in [`docs/screenshots/`](docs/screenshots/README.md) are taken by the docs tour in [`e2e/docs/`](e2e/docs/tour.spec.ts), in headless Firefox. Playwright cannot load an extension into Firefox, so the tour opens the pages in `data/` as files and stubs the `browser` API they use; the hint page is opened through `background.js`'s real menu handler. It needs no server and no Docker:

@@ -23,6 +23,8 @@ jobs:
       # The validator addons.mozilla.org runs on upload.
       - run: npm run lint
 
+      - run: npm test
+
   docs-tour:
     name: Docs screenshots (render check)
     runs-on: ubuntu-latest
