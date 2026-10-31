@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { test as base, expect, firefox, type Browser, type BrowserContext, type Page } from '@playwright/test'
 
-import { stubBrowser } from './stub'
+import { slowStorageReads, stubBrowser } from './stub'
 
 /* Fixtures of the e2e suite (tests/).
  *
@@ -110,7 +110,7 @@ export type Addon = {
 
 type WorkerFixtures = { addonBrowser: { browser: Browser; addon: Addon } }
 
-export const test = base.extend<{ addon: Addon; context: BrowserContext; stubbedPage: (file: string, customUrl?: string) => Promise<Page> }, WorkerFixtures>({
+export const test = base.extend<{ addon: Addon; context: BrowserContext; stubbedPage: (file: string, customUrl?: string, loadDelayMs?: number) => Promise<Page> }, WorkerFixtures>({
   addonBrowser: [
     async ({ launchOptions }, use) => {
       const dir = mkdtempSync(path.join(tmpdir(), 'mantis-helper-e2e-'))
@@ -206,8 +206,9 @@ export const test = base.extend<{ addon: Addon; context: BrowserContext; stubbed
   stubbedPage: async ({ page }, use) => {
     const errors: string[] = []
     page.on('pageerror', (e) => errors.push(e.message))
-    await use(async (file, customUrl) => {
+    await use(async (file, customUrl, loadDelayMs) => {
       await page.addInitScript(stubBrowser, customUrl)
+      if (loadDelayMs) await page.addInitScript(slowStorageReads, loadDelayMs)
       await page.goto(pathToFileURL(path.join(ROOT, 'data', file)).href)
       return page
     })

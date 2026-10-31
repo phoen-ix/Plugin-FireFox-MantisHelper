@@ -33,3 +33,15 @@ export function stubBrowser(customUrl?: string) {
     tabs: { create: async (props: { url: string }) => void w.createdTabs.push(props) },
   }
 }
+
+/** Storage reads that answer `ms` late, with the value from when they were
+ * made, as a busy browser does; `storageReads` counts the answered ones. Runs
+ * after stubBrowser (page.addInitScript, in that order). */
+export function slowStorageReads(ms: number) {
+  const w = window as any
+  const sync = w.browser.storage.sync
+  const get = sync.get
+  w.storageReads = 0
+  sync.get = (key: string) =>
+    get(key).then((value: object) => new Promise((resolve) => setTimeout(() => (w.storageReads++, resolve(value)), ms)))
+}

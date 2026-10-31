@@ -75,3 +75,13 @@ test('Enter saves, and typing again clears the confirmation', async ({ stubbedPa
   await expect(page.getByRole('status')).toHaveText('')
   await expect(page.locator('#preview')).toHaveText(`Issue 1234 will open ${MANTIS}view.php?id=x1234`)
 })
+
+test('what is typed before the saved URL has loaded is kept, and Save saves it', async ({ stubbedPage }) => {
+  // Storage answers late, after the user has started typing (seen in CI).
+  const page = await stubbedPage('options.html', undefined, 500)
+  await page.getByLabel('Mantis URL:').fill(MANTIS)
+  await page.waitForFunction(() => (window as any).storageReads > 0)
+  await expect(page.getByLabel('Mantis URL:')).toHaveValue(MANTIS)
+  await page.getByRole('button', { name: 'Save' }).click()
+  await expect(page.locator('#status')).toHaveText('Options saved.')
+})
