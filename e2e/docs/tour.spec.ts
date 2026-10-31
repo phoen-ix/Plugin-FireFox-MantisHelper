@@ -4,13 +4,15 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { expect, test, type Page } from '@playwright/test'
 
+import { stubBrowser } from '../stub'
+
 /* The docs tour: one screenshot per page of the extension (the gallery is
  * docs/screenshots/README.md). It is also a render check (ci.yml runs it):
  * every test asserts something page-specific before it shoots, and a page
  * that throws fails the test.
  *
  * Playwright cannot load an extension into Firefox, so the pages are opened
- * from data/ as files, and stubBrowser() stands in for the WebExtension
+ * from data/ as files, and stubBrowser() (../stub.ts) stands in for the WebExtension
  * `browser` API they call. The context menu itself is browser UI that no
  * screenshot can show; the hint page is opened the way the menu opens it,
  * through background.js's click handler. */
@@ -37,32 +39,6 @@ test.beforeEach(({ page }) => {
 test.afterEach(() => {
   expect(pageErrors.map((e) => e.message)).toEqual([])
 })
-
-/** The part of the `browser` API that the tour reaches in data/, with `customUrl` stored
- * (undefined: never configured). Runs in the page, before its scripts. */
-function stubBrowser(customUrl?: string) {
-  const store: Record<string, unknown> = customUrl === undefined ? {} : { customUrl }
-  const listeners: Record<string, (...args: any[]) => unknown> = {}
-  const event = (name: string) => ({ addListener: (fn: (...args: any[]) => unknown) => (listeners[name] = fn) })
-  const w = window as any
-  w.createdTabs = []
-  w.menuClick = (info: object, tab: object) => listeners.menuClicked(info, tab)
-  w.browser = {
-    storage: {
-      sync: {
-        get: async (key: string) => (key in store ? { [key]: store[key] } : {}),
-        set: async (items: object) => void Object.assign(store, items),
-      },
-    },
-    runtime: {
-      onInstalled: event('installed'),
-      getURL: (p: string) => new URL(`../${p}`, location.href).href,
-    },
-    contextMenus: { onClicked: event('menuClicked') },
-    windows: { get: async () => ({ type: 'normal' }) },
-    tabs: { create: async (props: { url: string }) => void w.createdTabs.push(props) },
-  }
-}
 
 async function optionsPage(page: Page, customUrl?: string): Promise<void> {
   await page.addInitScript(stubBrowser, customUrl)

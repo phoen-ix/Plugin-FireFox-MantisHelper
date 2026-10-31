@@ -11,7 +11,9 @@ browser.runtime.onInstalled.addListener(async () => {
   });
 });
 
-browser.contextMenus.onClicked.addListener(async (info, tab) => {
+browser.contextMenus.onClicked.addListener(handleMenuClick);
+
+async function handleMenuClick(info, tab) {
   if (info.menuItemId !== MENU_ID) {
     return;
   }
@@ -28,7 +30,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   const url = issueId ? `${urlPrefix}${issueId}` : browser.runtime.getURL('data/invalid_selection.html');
   const placement = await besideTab(tab);
   await browser.tabs.create({ url, ...placement });
-});
+}
 
 // Opens the new tab next to the one the menu was used in, which also keeps its
 // container and tab group. Popup windows have no tab strip, so they are skipped.
