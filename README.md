@@ -2,7 +2,7 @@
 
 <img src="docs/screenshots/options-saved.png" alt="Mantis Helper options page with a saved Mantis URL and the address issue 1234 will open" width="800">
 
-Released: v2.0.1 on [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/). More screenshots: [the gallery](docs/screenshots/README.md).
+Released: v2.1.0 on [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/mantis-helper/). More screenshots: [the gallery](docs/screenshots/README.md).
 
 ## Overview
 Mantis Helper is a Firefox extension that adds a context menu option for quickly opening issue numbers in [Mantis](https://www.mantisbt.org/), a popular bug tracking system. It streamlines your workflow by letting you navigate directly to Mantis issues from any webpage where an issue number is displayed.
@@ -59,7 +59,11 @@ The **Docs screenshots** workflow (manual) runs the same script and uploads the 
 
 ## Changelog
 
-### Unreleased
+### v2.1.0
+Fixed:
+- The options page could not be scrolled to its top when the window was lower than the form (e.g. zoomed in).
+- The Save button's text and the URL field's border had too little contrast.
+
 Changed:
 - Requires Firefox 142 or later, the first version with the built-in data consent on every platform (Firefox ESR 140 reached its end of life in September 2026).
 
