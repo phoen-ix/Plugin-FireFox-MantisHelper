@@ -25,10 +25,10 @@ of its pages fail the test); **file** = a page from `data/` opened as a file wit
 Item → rows: `options_ui`, `options.html`, `storage`, `options.js` (`update`, `DOMContentLoaded`,
 `input`, `submit`, `storage.sync.get/set`) → "Options page"; `invalid_selection.html` → "Pages";
 `mantis.js`, `background.js` → "Background page"; `contextMenus`, `onInstalled`, `removeAll`,
-`create` → "Context menu" (first three rows); `onClicked`, `handleMenuClick`, `storage.sync.get`,
+`create` → "Context menu" (first four rows); `onClicked` (also the first row), `handleMenuClick`, `storage.sync.get`,
 `openOptionsPage`, `getURL`, `tabs.create`, `besideTab`, `windows.get` → "Context menu" (the rest).
 
-Totals: **27 rows: ✅ 21, ❌ 6** — (c) 2, (d) 3, (e) 1.
+Totals: **28 rows: ✅ 22, ❌ 6** — (c) 2, (d) 3, (e) 1.
 
 ## Pages (sweep)
 
@@ -42,9 +42,10 @@ Totals: **27 rows: ✅ 21, ❌ 6** — (c) 2, (d) 3, (e) 1.
 
 | Item | Test |
 |---|---|
-| `runtime.onInstalled` → `contextMenus.removeAll` + `create` "Open “%s” in Mantis" | ✅ `menu.spec.ts › the menu is registered when the add-on is installed` |
-| The entry in Firefox's context menu, its title with the selection, only for a selection | ❌ (d) browser UI: Playwright cannot open Firefox's context menu. The handler it calls is driven below. |
-| `onInstalled` after a Firefox update (no duplicate menu id) | ❌ (d) Firefox fires it with reason `browser_update` only on a real browser update; reinstalling a temporary add-on unloads its menus first |
+| Installed add-on: the menu id `openInMantis` exists, `contextMenus.onClicked` → `handleMenuClick` | ✅ `menu.spec.ts › the menu is registered when the add-on is installed` |
+| `runtime.onInstalled` → `contextMenus.removeAll`, then `create` `{id: 'openInMantis', title: 'Open “%s” in Mantis', contexts: ['selection']}`, each time it fires (file layer, recorded calls) | ✅ `menu.spec.ts › onInstalled clears the menus, then creates “Open “%s” in Mantis” for selections, every time` |
+| The entry in Firefox's context menu as the browser draws it, the selection in its title | ❌ (d) browser UI: Playwright cannot open Firefox's context menu. What the add-on asks for is the row above; the handler it calls is driven below. |
+| Firefox itself firing `onInstalled` after a browser update | ❌ (d) Firefox fires it with reason `browser_update` only on a real browser update; reinstalling a temporary add-on unloads its menus first. The handler's response to a second firing is the `onInstalled` row above. |
 | Selection with one issue number → issue opens next to its tab, same container (`1234`, `#1234`, `0001234`, `Issue #1234: Fix login bug`, `0001234: Fix login bug`, `See #1234 and 56.`) | ✅ `menu.spec.ts › a configured add-on › “<selection>” opens issue 1234 next to its tab, in its container` (6) |
 | Selection without a single number → hint page next to its tab (`Issues 12 and 34`, `Fix login bug`, `1e3`) | ✅ `menu.spec.ts › a configured add-on › “<selection>” opens the invalid-selection hint next to its tab` (3) |
 | Every rule of finding the number (precedence `#` > zero-padded > plain, ambiguity, `0x1A`, `-5`, `1.5`, 11 digits …) | ❌ (c) `tests/mantis.test.mjs › findIssueId: …` (`npm test`, CI job `lint`); the e2e rows above drive a sample through the handler |

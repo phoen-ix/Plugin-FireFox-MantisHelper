@@ -23,7 +23,11 @@ for (const [file, heading] of PAGES) {
       const url = addon.url(`data/${file}`)
       await addon.background.evaluate((url) => browser.windows.create({ url }), url)
       const page = await addon.page(url)
-      expect(await page.evaluate(() => document.querySelector('h1')!.textContent)).toBe(heading)
+      const h1 = await page.evaluate(() => {
+        const h1 = document.querySelector('h1')!
+        return { text: h1.textContent, visible: h1.checkVisibility() }
+      })
+      expect(h1).toEqual({ text: heading, visible: true })
     })
 
     test(`${file}, ${state}: as a file`, async ({ stubbedPage }) => {

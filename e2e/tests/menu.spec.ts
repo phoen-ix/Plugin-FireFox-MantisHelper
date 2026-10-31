@@ -1,4 +1,6 @@
-import { MANTIS, SOURCE, clickMenu, expect, newTabs, sourcePage, storeUrl, test } from '../fixtures'
+import path from 'node:path'
+
+import { MANTIS, ROOT, SOURCE, clickMenu, expect, newTabs, sourcePage, storeUrl, test } from '../fixtures'
 
 /* The context menu "Open “<selection>” in Mantis" of the installed add-on: what
  * its click handler (background.js) opens for a selection, and where. Firefox's
@@ -12,6 +14,23 @@ test('the menu is registered when the add-on is installed', async ({ addon }) =>
   // update() fails for a menu id that does not exist.
   await expect(addon.background.evaluate(() => browser.contextMenus.update('noSuchMenu', {}))).rejects.toThrow()
   await addon.background.evaluate(() => browser.contextMenus.update('openInMantis', {}))
+  expect(await addon.background.evaluate(() => browser.contextMenus.onClicked.hasListener(handleMenuClick))).toBe(true)
+})
+
+// What the menu is, and that Firefox firing onInstalled again (after a browser
+// update) does not add a second one: background.js in a page with the stubbed
+// API (stub.ts), which records the contextMenus calls.
+test('onInstalled clears the menus, then creates “Open “%s” in Mantis” for selections, every time', async ({ stubbedPage }) => {
+  const page = await stubbedPage('options.html')
+  await page.addScriptTag({ path: path.join(ROOT, 'data/background.js') })
+  const calls = await page.evaluate(async () => {
+    const w = window as any
+    await w.installed()
+    await w.installed()
+    return w.menuCalls
+  })
+  const create = ['create', { id: 'openInMantis', title: 'Open “%s” in Mantis', contexts: ['selection'] }]
+  expect(calls).toEqual([['removeAll'], create, ['removeAll'], create])
 })
 
 test.describe('a configured add-on', () => {
