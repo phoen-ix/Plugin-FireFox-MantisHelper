@@ -44,3 +44,31 @@ jobs:
       # The screenshots go to a temp dir; docs-screenshots.yml makes the ones to commit.
       - name: Run the docs tour
         run: ARTIFACTS="$RUNNER_TEMP/docs-run" scripts/docs-screenshots.sh "$RUNNER_TEMP/screenshots"
+
+  # The e2e suite (e2e/tests/, e2e/COVERAGE.md): the add-on installed into
+  # headless Firefox, and its pages. Traces of failed tests are uploaded.
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+
+      - name: Install Playwright
+        working-directory: e2e
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps firefox
+
+      - name: Run the e2e suite
+        run: ARTIFACTS="$RUNNER_TEMP/e2e-run" scripts/e2e.sh
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: e2e-run
+          path: ${{ runner.temp }}/e2e-run/
+          retention-days: 7
